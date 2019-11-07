@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+	<title>Babylon - Getting Started</title>
+
+	<style>
+		html,
+		body {
+			overflow: hidden;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#renderCanvas {
+			width: 100%;
+			height: 100%;
+			touch-action: none;
+		}
+	</style>
+
+</head>
+
+<body>
+	<canvas id="renderCanvas"></canvas>
+
+	<script type="module">
+
+		import { Scene } from "./node_modules/@babylonjs/core/scene.js";
+		import { Engine } from "./node_modules/@babylonjs/core/Engines/engine.js";
+		import { FreeCamera } from "./node_modules/@babylonjs/core/Cameras/freeCamera.js";
+		import { Vector3 } from "./node_modules/@babylonjs/core/Maths/math.js";
+		import { HemisphericLight } from "./node_modules/@babylonjs/core/Lights/hemisphericLight.js";
+		import { MeshBuilder } from "./node_modules/@babylonjs/core/Meshes/meshBuilder.js";
+		import { StandardMaterial } from "./node_modules/@babylonjs/core/Materials/standardMaterial.js";
+
+		window.addEventListener('DOMContentLoaded', function () {
+
+			var canvas = document.getElementById('renderCanvas');
+			var engine = new Engine(canvas, true);
+
+
+			var createScene = function () {
+				// Create a basic BJS Scene object.
+				var scene = new Scene(engine);
+
+				// Create a FreeCamera, and set its position to (x:0, y:5, z:-10).
+				var camera = new FreeCamera('camera', new Vector3(0, 5, -10), scene);
+
+				// Target the camera to scene origin.
+				camera.setTarget(Vector3.Zero());
+
+				// Attach the camera to the canvas.
+				camera.attachControl(canvas, false);
+
+				// Create a basic light, aiming 0,1,0 - meaning, to the sky.
+				var light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
+
+				// Create a built-in "sphere" shape. 
+				var sphere = MeshBuilder.CreateSphere('sphere', { segments: 16, diameter: 2 }, scene);
+
+				// Move the sphere upward 1/2 of its height.
+				sphere.position.y = 1;
+
+				// Create a built-in "ground" shape.
+				var ground = MeshBuilder.CreateGround('ground1', { height: 6, width: 6, subdivisions: 2 }, scene);
+
+				// Return the created scene.
+				return scene;
+			}
+
+			var scene = createScene();
+
+			engine.runRenderLoop(function () {
+				scene.render();
+			});
+
+			window.addEventListener('resize', function () {
+				engine.resize();
+			});
+
+		});
+	</script>
+
+
+</body>
+
+</html>
